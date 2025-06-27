@@ -27,7 +27,7 @@ export default function ShareModal({ isOpen, onClose, result }: ShareModalProps)
     if (window.Kakao && !window.Kakao.isInitialized()) {
       // Initialize with a demo app key - for real deployment, you would need to register your app
       try {
-        window.Kakao.init('demo');
+        window.Kakao.init('0bb79b68177f628a20a0cc84bdaf8e40');
         setKakaoReady(true);
       } catch (error) {
         console.log('Kakao initialization failed:', error);
