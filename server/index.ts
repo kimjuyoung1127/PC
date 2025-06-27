@@ -53,4 +53,4 @@ if (process.env.NODE_ENV === 'development') {
 
 // Netlify 함수를 위한 핸들러 내보내기
 // serverless-http는 요청이 있을 때마다 createApp을 호출하여 앱을 초기화합니다.
-export const handler = serverless(createApp());
+export const handler = serverless(createApp);
