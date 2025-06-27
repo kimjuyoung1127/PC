@@ -4,54 +4,37 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import serverless from 'serverless-http';
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// Express 앱을 생성하고 설정하는 비동기 함수
+async function createApp() {
+  const app = express();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+  // 로깅 미들웨어
+  app.use((req, res, next) => {
+    const start = Date.now();
+    res.on("finish", () => {
+      const duration = Date.now() - start;
+      if (req.path.startsWith("/api")) {
+        log(`${req.method} ${req.path} ${res.statusCode} in ${duration}ms`);
       }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
+    });
+    next();
   });
 
-  next();
-});
-
-(async () => {
+  // 라우트 등록
   const server = await registerRoutes(app);
 
+  // 오류 처리 미들웨어
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
-    throw err;
   });
 
-  if (app.get("env") === "development") {
+  // 개발 환경과 프로덕션 환경 분기 처리
+  if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
-    // 개발 환경에서는 여전히 서버를 실행해야 합니다.
     const port = 5000;
     server.listen(port, "0.0.0.0", () => {
       log(`serving on port ${port}`);
@@ -60,7 +43,14 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-})();
+  return app;
+}
+
+// 개발 환경에서는 즉시 앱을 생성하고 서버를 시작합니다.
+if (process.env.NODE_ENV === 'development') {
+  createApp();
+}
 
 // Netlify 함수를 위한 핸들러 내보내기
-export const handler = serverless(app);
+// serverless-http는 요청이 있을 때마다 createApp을 호출하여 앱을 초기화합니다.
+export const handler = serverless(createApp());
