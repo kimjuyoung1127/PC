@@ -18,8 +18,15 @@ export default function DemographicPage() {
   };
 
   const handleProceed = () => {
-    // Store demographics in sessionStorage
-    sessionStorage.setItem("demographics", JSON.stringify(demographics));
+    // Filter out "none" values and store demographics in sessionStorage
+    const filteredDemographics = Object.entries(demographics).reduce((acc, [key, value]) => {
+      if (value && value !== "none") {
+        acc[key as keyof Demographics] = value;
+      }
+      return acc;
+    }, {} as Demographics);
+    
+    sessionStorage.setItem("demographics", JSON.stringify(filteredDemographics));
     setLocation("/quiz");
   };
 
@@ -41,7 +48,7 @@ export default function DemographicPage() {
                   <SelectValue placeholder="선택하지 않음" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">선택하지 않음</SelectItem>
+                  <SelectItem value="none">선택하지 않음</SelectItem>
                   <SelectItem value="10s">10대</SelectItem>
                   <SelectItem value="20s">20대</SelectItem>
                   <SelectItem value="30s">30대</SelectItem>
@@ -59,7 +66,7 @@ export default function DemographicPage() {
                   <SelectValue placeholder="선택하지 않음" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">선택하지 않음</SelectItem>
+                  <SelectItem value="none">선택하지 않음</SelectItem>
                   <SelectItem value="male">남성</SelectItem>
                   <SelectItem value="female">여성</SelectItem>
                   <SelectItem value="other">기타</SelectItem>
@@ -74,7 +81,7 @@ export default function DemographicPage() {
                   <SelectValue placeholder="선택하지 않음" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">선택하지 않음</SelectItem>
+                  <SelectItem value="none">선택하지 않음</SelectItem>
                   <SelectItem value="seoul">서울</SelectItem>
                   <SelectItem value="busan">부산</SelectItem>
                   <SelectItem value="daegu">대구</SelectItem>
