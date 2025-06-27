@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development tsx -r dotenv/config --env-file ./.env.local server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",
-    "build:server": "esbuild server/index.ts --bundle --platform=node --outfile=netlify/functions/index.js --format=esm --external:@google/generative-ai --external:drizzle-orm --external:express --external:pg --external:serverless-http --external:@neondatabase/serverless --external:ws --external:dotenv",
+    "build:server": "esbuild server/index.ts --bundle --platform=node --outfile=netlify/functions/index.js --format=esm --external:@google/generative-ai --external:drizzle-orm --external:express --external:pg --external:serverless-http --external:@neondatabase/serverless --external:ws --external:dotenv --external:lightningcss",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "cross-env NODE_ENV=development dotenv -e .env.local -- drizzle-kit push",
