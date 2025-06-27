@@ -1,9 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { QuizAnswer, Demographics, CategoryScore } from "@shared/schema";
 
-const ai = new GoogleGenAI({ 
-  apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || "" 
-});
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || "");
 
 export async function analyzePoliticalOrientation(
   answers: QuizAnswer[],
