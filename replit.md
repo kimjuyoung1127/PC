@@ -17,7 +17,7 @@ This is a full-stack web application that provides a political orientation quiz 
 - **Runtime**: Node.js with Express.js
 - **Language**: TypeScript (ESM modules)
 - **Database**: PostgreSQL with Drizzle ORM
-- **Session Storage**: In-memory storage with fallback to PostgreSQL
+- **Session Storage**: PostgreSQL database storage
 - **AI Integration**: Google Gemini API for political analysis
 
 ### Database Schema
@@ -91,7 +91,8 @@ The application uses two main tables:
 
 ```
 Changelog:
-- June 26, 2025. Initial setup
+- June 27, 2025. Added PostgreSQL database integration
+- June 26, 2025. Initial setup with Gemini AI integration
 ```
 
 ## User Preferences
